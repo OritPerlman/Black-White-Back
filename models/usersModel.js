@@ -16,13 +16,17 @@ let userSchema = new mongoose.Schema({
         type: Date, default: (Date.now()+30)
     },
     role: {
-        type: Boolean, default: true
+        type: Boolean, default: false
     },
     active: {
         type: Boolean, default: true
     },
-    rank: {type: String, default: "free"},
-    family: String,
+    rank: {
+        type: String, default: "free"
+    },
+    family: {
+        type: Boolean, default: false
+    },
     gender: String,
 
 })
@@ -37,8 +41,11 @@ exports.validUser = (_reqBody) => {
     let joiSchema = Joi.object({
         firstName: Joi.string().min(2).max(99).required(),
         lastName: Joi.string().min(2).max(99).required(),
-        email: Joi.string().min(2).max(99).email().required(),
-        password: Joi.string().min(3).max(99).required()
+        email: Joi.string().email().required().unique().messages({
+            'any.unique': 'Email must be unique',
+          }),
+        password: Joi.string().min(3).max(99).required(),
+        gender: Joi.string().min(3).max(9).required()
     })
     return joiSchema.validate(_reqBody)
 }
