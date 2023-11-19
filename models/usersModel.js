@@ -1,19 +1,18 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
-const {config}= require("../config/secret")
-
+const { config } = require("../config/secret");
 
 let userSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
-    email: String,
+    email: { type: String, unique: true }, // Adding unique constraint
     password: String,
     date_created: {
         type: Date, default: Date.now()
     },
     date_expired: {
-        type: Date, default: (Date.now()+30)
+        type: Date, default: () => new Date(+new Date() + 30*24*60*60*1000) // Default to 30 days from now
     },
     role: {
         type: Boolean, default: false
@@ -28,12 +27,12 @@ let userSchema = new mongoose.Schema({
         type: Boolean, default: false
     },
     gender: String,
+});
 
-})
-exports.UserModel = mongoose.model("users", userSchema)
+exports.UserModel = mongoose.model("users", userSchema);
 
 exports.createToken = (_id, role) => {
-    let token = jwt.sign({ _id, role }, config.tokenSecret, { expiresIn: "60mins" })
+    let token = jwt.sign({ _id, role }, config.tokenSecret, { expiresIn: "60m" });
     return token;
 }
 
@@ -41,19 +40,17 @@ exports.validUser = (_reqBody) => {
     let joiSchema = Joi.object({
         firstName: Joi.string().min(2).max(99).required(),
         lastName: Joi.string().min(2).max(99).required(),
-        email: Joi.string().email().required().unique().messages({
-            'any.unique': 'Email must be unique',
-          }),
+        email: Joi.string().email().required(),
         password: Joi.string().min(3).max(99).required(),
         gender: Joi.string().min(3).max(9).required()
-    })
-    return joiSchema.validate(_reqBody)
+    });
+    return joiSchema.validate(_reqBody);
 }
 
 exports.validLogin = (_reqBody) => {
     let joiSchema = Joi.object({
         email: Joi.string().min(2).max(99).email().required(),
         password: Joi.string().min(3).max(99).required()
-    })
-    return joiSchema.validate(_reqBody)
+    });
+    return joiSchema.validate(_reqBody);
 }
