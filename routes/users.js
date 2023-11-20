@@ -82,7 +82,7 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ msg: "Password or email is worng ,code:2" })
     }
     let token = await createToken(user._id, user.role)
-    res.json({ token })
+    res.json({ token, user })
   }
   catch (err) {
     console.log(err);

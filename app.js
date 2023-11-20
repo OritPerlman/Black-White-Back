@@ -12,5 +12,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname,"public")))
 routesInit(app);
 const server = http.createServer(app);
-let port = process.env.PORT || 3000
+let port = process.env.PORT || 3001
 server.listen(port);
+
+module.exports = app;
