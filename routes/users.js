@@ -8,11 +8,16 @@ router.get("/", (req, res) => {
   res.json({ msg: "users work !" })
 })
 
+// A rout that checks that the token is correct and returns information 
+//about it like id and his role
+router.get("/checkToken", auth, async (req, res) => {
+  res.status(200).json(req.tokenData);
+})
 
 router.get("/myInfo", auth, async (req, res) => {
   try {
     let userInfo = await UserModel.findOne({ _id: req.tokenData._id }, { password: 0 })
-    res.json(userInfo)
+    res.status(200).json(userInfo)
   }
   catch (err) {
     console.log(err)
@@ -24,7 +29,7 @@ router.get("/myInfo", auth, async (req, res) => {
 router.get("/usersList", authAdmin , async(req,res) => {
   try{
     let data = await UserModel.find({},{password:0});
-    res.json(data)
+    res.status(200).json(data)
   }
   catch(err){
     console.log(err)
@@ -36,7 +41,7 @@ router.get("/userInfo/:userId", authAdmin , async(req,res) => {
   try{
     const { userId } = req.params;
     let data = await UserModel.findOne({ _id: userId });
-    res.json(data)
+    res.status(200).json(data)
   }
   catch(err){
     console.log(err)
