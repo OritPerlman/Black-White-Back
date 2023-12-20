@@ -6,7 +6,7 @@ const router = express.Router();
 router.get("/", auth , async(req,res) => {
   try{
     let data = await VideosModel.find({});
-    res.json(data)
+    res.status(200).json(data)
   }
   catch(err){
     console.log(err)
@@ -19,7 +19,7 @@ router.get("/:videoId", auth , async(req,res) => {
         const { videoId } = req.params;
 
       let data = await VideosModel.findOne({_id: videoId});
-      res.json(data)
+      res.status(200).json(data)
     }
     catch(err){
       console.log(err)
@@ -34,7 +34,7 @@ router.post("/", authAdmin, async (req, res) => {
   }
   try {
     let video = new VideosModel(req.body)
-    res.json(video)
+    res.status(200).json(video)
   }
   catch (err) {
     console.log(err);
@@ -47,7 +47,7 @@ router.delete("/:videoId", authAdmin, async (req, res) => {
   try {
     const { videoId } = req.params;
     let data = await VideosModel.deleteOne({ _id: videoId });
-    res.json(data);
+    res.status(200).json(data);
   } catch (err) {
     console.log(err);
     res.status(500).json({ msg: "err", err });
@@ -68,7 +68,7 @@ router.patch("/changeActive/:videoId", authAdmin, async (req, res) => {
         return res.status(404).json({ msg: "Video not found" });
       }
   
-      res.json(updatedVideo);
+      res.status(200).json(updatedVideo);
     } catch (err) {
       console.log(err);
       res.status(500).json({ msg: "Error updating video", err });
@@ -89,7 +89,7 @@ router.patch("/changeActive/:videoId", authAdmin, async (req, res) => {
         return res.status(404).json({ msg: "Video not found" });
       }
   
-      res.json(updatedVideo);
+      res.status(200).json(updatedVideo);
     } catch (err) {
       console.log(err);
       res.status(500).json({ msg: "Error updating video", err });

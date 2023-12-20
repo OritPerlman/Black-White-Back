@@ -8,7 +8,7 @@ router.get("/", auth , async(req,res) => {
         const { userId } = req.tokenData._id;
 
       let data = await WatchLaterModel.findOne({userId: userId});
-      res.json(data)
+      res.status(200).json(data)
     }
     catch(err){
       console.log(err)
@@ -20,7 +20,7 @@ router.delete("/", auth, async (req, res) => {
   try {
     const { userId } = req.tokenData._id;
     let data = await WatchLaterModel.deleteOne({ userId: userId });
-    res.json(data);
+    res.status(200).json(data);
   } catch (err) {
     console.log(err);
     res.status(500).json({ msg: "err", err });
@@ -32,7 +32,7 @@ router.delete("/:videoId", auth, async (req, res) => {
         const { userId } = req.tokenData._id;
       const { videoId } = req.params;
       let data = await WatchLaterModel.deleteOne({ userId: userId }, {videoId: videoId});
-      res.json(data);
+      res.status(200).json(data);
     } catch (err) {
       console.log(err);
       res.status(500).json({ msg: "err", err });
@@ -53,7 +53,7 @@ router.delete("/:videoId", auth, async (req, res) => {
         return res.status(404).json({ msg: "User not found" });
       }
   
-      res.json(updated);
+      res.status(200).json(updated);
     } catch (err) {
       console.log(err);
       res.status(500).json({ msg: "Error updating user", err });

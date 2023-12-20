@@ -6,7 +6,7 @@ const router = express.Router();
 router.get("/", auth , async(req,res) => {
   try{
     let data = await CategoriesModel.find({});
-    res.json(data)
+    res.status(200).json(data)
   }
   catch(err){
     console.log(err)
@@ -21,7 +21,7 @@ router.post("/", authAdmin, async (req, res) => {
   }
   try {
     let category = new CategoriesModel(req.body)
-    res.json(category)
+    res.status(200).json(category)
   }
   catch (err) {
     console.log(err);
@@ -34,7 +34,7 @@ router.delete("/:categoryId", authAdmin, async (req, res) => {
   try {
     const { categoryId } = req.params;
     let data = await CategoriesModel.deleteOne({ _id: categoryId });
-    res.json(data);
+    res.status(200).json(data);
   } catch (err) {
     console.log(err);
     res.status(500).json({ msg: "err", err });

@@ -57,10 +57,10 @@ router.post("/", async (req, res) => {
 
   try {
     let user = new UserModel(req.body);
-    user.password = await bcrypt.hash(user.password, 10);
+    user.password = bcrypt.hash(user.password, 10);
     await user.save();
     user.password = "*****";
-    res.json(user);
+    res.status(200).json(user);
   } catch (err) {
     if (err.code === 11000) {
       res.status(500).json({ msg: "Email already in the system, try logging in", code: 11000 });
@@ -87,7 +87,7 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ msg: "Password or email is worng ,code:2" })
     }
     let token = await createToken(user._id, user.role)
-    res.json({ token, user })
+    res.status(200).json({ token, user })
   }
   catch (err) {
     console.log(err);
@@ -99,7 +99,7 @@ router.delete("/:userId", authAdmin, async (req, res) => {
   try {
     const { userId } = req.params;
     let data = await UserModel.deleteOne({ _id: userId });
-    res.json(data);
+    res.status(200).json(data);
   } catch (err) {
     console.log(err);
     res.status(500).json({ msg: "err", err });
@@ -120,7 +120,7 @@ router.put("/", auth, async (req, res) => {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    res.json(updatedUser);
+    res.status(200).json(updatedUser);
   } catch (err) {
     console.log(err);
     res.status(500).json({ msg: "Error updating user", err });
@@ -141,7 +141,7 @@ router.patch("/changeRole/:userId", authAdmin, async (req, res) => {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    res.json(updatedUser);
+    res.status(200).json(updatedUser);
   } catch (err) {
     console.log(err);
     res.status(500).json({ msg: "Error updating user", err });
@@ -162,7 +162,7 @@ router.patch("/changeActive/:userId", authAdmin, async (req, res) => {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    res.json(updatedUser);
+    res.status(200).json(updatedUser);
   } catch (err) {
     console.log(err);
     res.status(500).json({ msg: "Error updating user", err });
@@ -183,7 +183,7 @@ router.patch("/changePassword", auth, async (req, res) => {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    res.json(updatedUser);
+    res.status(200).json(updatedUser);
   } catch (err) {
     console.log(err);
     res.status(500).json({ msg: "Error updating password", err });
@@ -204,7 +204,7 @@ router.get("/search", authAdmin, async (req, res) => {
 
     const users = await UserModel.find(query);
 
-    res.json(users);
+    res.status(200).json(users);
   } catch (err) {
     console.log(err);
     res.status(500).json({ msg: "Error searching users", err });
