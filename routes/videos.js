@@ -75,4 +75,25 @@ router.patch("/changeActive/:videoId", authAdmin, async (req, res) => {
     }
   });
   
+  router.patch("/changeRank/:videoId", authAdmin, async (req, res) => {
+    try {
+      const { videoId } = req.params;
+      const { rank } = req.body; 
+      const updatedVideo = await VideosModel.findOneAndUpdate(
+        { _id: videoId },
+        { $set: { rank: rank } },
+        { new: true, runValidators: true }
+      );
+  
+      if (!updatedVideo) {
+        return res.status(404).json({ msg: "Video not found" });
+      }
+  
+      res.json(updatedVideo);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ msg: "Error updating video", err });
+    }
+  });
+
 module.exports = router;

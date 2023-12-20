@@ -73,7 +73,7 @@ router.post("/login", async (req, res) => {
     return res.status(400).json(validBody.error.details)
   }
   try {
-    let user = await UserModel.findOne({ email: req.body.email })
+    let user = await UserModel.findOne({ email: req.body.email, active: true })
     if (!user) {
       return res.status(401).json({ msg: "Password or email is worng ,code:1" })
     }
