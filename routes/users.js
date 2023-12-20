@@ -50,14 +50,14 @@ router.get("/userInfo/:userId", authAdmin , async(req,res) => {
 })
 
 router.post("/", async (req, res) => {
-  let validBody = validUser(req.body);
+  let validBody = await validUser(req.body);
   if (validBody.error) {
     return res.status(400).json(validBody.error.details);
   }
 
   try {
     let user = new UserModel(req.body);
-    user.password = bcrypt.hash(user.password, 10);
+    user.password = await bcrypt.hash(user.password, 10);
     await user.save();
     user.password = "*****";
     res.status(200).json(user);
