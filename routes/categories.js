@@ -1,5 +1,5 @@
 const express = require("express");
-const { CategoriesModel } = require("../models/categoriesModel");
+const { CategoriesModel, validCategory } = require("../models/categoriesModel");
 const { auth,authAdmin } = require("../middlewares/auth")
 const router = express.Router();
 
@@ -15,19 +15,20 @@ router.get("/", auth , async(req,res) => {
 })
 
 router.post("/", authAdmin, async (req, res) => {
-  let validBody = validCategory(req.body)
-  if (validBody.error) {
-    return res.status(400).json(validBody.error.details)
+  let validation = validCategory(req.body);
+  if (validation.error) {
+      return res.status(400).json(validation.error.details);
   }
   try {
-    let category = new CategoriesModel(req.body)
-    res.status(200).json(category)
+      let category = new CategoriesModel(req.body);
+      await category.save(); // Use await here to wait for the save operation
+      res.status(200).json(category);
+  } catch (err) {
+      console.log(err);
+      res.status(500).json({ msg: "Internal Server Error" });
   }
-  catch (err) {
-    console.log(err);
-    return res.status(500).json({ msg: "err", err })
-  }
-})
+});
+
 
 
 router.delete("/:categoryId", authAdmin, async (req, res) => {
