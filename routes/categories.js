@@ -17,15 +17,24 @@ router.get("/", auth , async(req,res) => {
 router.post("/", authAdmin, async (req, res) => {
   let validation = validCategory(req.body);
   if (validation.error) {
-      return res.status(400).json(validation.error.details);
+    return res.status(400).json(validation.error.details);
   }
   try {
-      let category = new CategoriesModel(req.body);
-      await category.save(); // Use await here to wait for the save operation
-      res.status(200).json(category);
+    let category;
+    if (req.body._id) {
+      category = await CategoriesModel.findById(req.body._id);
+      if (!category) {
+        return res.status(404).json({ msg: "Category not found" });
+      }
+      category = await CategoriesModel.findByIdAndUpdate(req.body._id, req.body, { new: true });
+    } else {
+      category = new CategoriesModel(req.body);
+      await category.save();
+    }
+    res.status(200).json(category);
   } catch (err) {
-      console.log(err);
-      res.status(500).json({ msg: "Internal Server Error" });
+    console.log(err);
+    res.status(500).json({ msg: "Internal Server Error" });
   }
 });
 
