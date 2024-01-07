@@ -8,6 +8,7 @@ exports.CategoriesModel = mongoose.model("categories", categorySchema)
 
 exports.validCategory = (_reqBody) => {
     let joiSchema = Joi.object({
+        _id: Joi.string().optional(),
         name: Joi.string().min(2).max(99).required()
     })
     return joiSchema.validate(_reqBody)

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "node app"
+    "start": "nodemon app"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
     "joi": "^17.6.0",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
-    "mongoose": "^6.5.4"
+    "mongoose": "^6.5.4",
+    "nodemon": "^3.0.2"
   }
 }

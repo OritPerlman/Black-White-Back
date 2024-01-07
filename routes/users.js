@@ -108,7 +108,7 @@ router.delete("/:userId", authAdmin, async (req, res) => {
 
 router.put("/", auth, async (req, res) => {
   try {
-    const { userId } = req.tokenData._id;
+    const userId = req.tokenData._id;
     const updatedUserData = req.body;
     const updatedUser = await UserModel.findOneAndUpdate(
       { _id: userId },
@@ -171,7 +171,7 @@ router.patch("/changeActive/:userId", authAdmin, async (req, res) => {
 
 router.patch("/changePassword", auth, async (req, res) => {
   try {
-    const { userId } = req.tokenData._id;
+    const userId = req.tokenData._id;
     const { password } = req.body; 
     const updatedUser = await UserModel.findOneAndUpdate(
       { _id: userId },
@@ -192,7 +192,7 @@ router.patch("/changePassword", auth, async (req, res) => {
 
 router.get("/search", authAdmin, async (req, res) => {
   try {
-    const { firstName, lastName } = req.query;
+    const { firstName, lastName } = req.body;
 
     const query = {};
     if (firstName) {

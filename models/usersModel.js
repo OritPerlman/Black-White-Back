@@ -38,7 +38,7 @@ let userSchema = new mongoose.Schema({
 exports.UserModel = mongoose.model("users", userSchema);
 
 exports.createToken = (_id, role) => {
-  let token = jwt.sign({ _id, role }, config.tokenSecret, { expiresIn: "60m" });
+  let token = jwt.sign({ _id, role }, config.tokenSecret, { expiresIn: "60d" });
   return token;
 };
 

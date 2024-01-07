@@ -1,5 +1,5 @@
 const express = require("express");
-const { VideosModel } = require("../models/videosModel");
+const { VideosModel, validVideo } = require("../models/videosModel");
 const { auth,authAdmin } = require("../middlewares/auth")
 const router = express.Router();
 

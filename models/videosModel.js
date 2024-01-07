@@ -32,11 +32,11 @@ let videoSchema = new mongoose.Schema({
 })
 exports.VideosModel = mongoose.model("videos", videoSchema)
 
-exports.validUser = (_reqBody) => {
+exports.validVideo = (_reqBody) => {
     let joiSchema = Joi.object({
         title: Joi.string().min(2).max(99).required(),
         description: Joi.string().min(2).max(99).required(),
-        videoURL: Joi.string().min(2).max(99).email().required(),
-    })
+        videoURL: Joi.string().min(2).max(99).pattern(/^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$/).required(),
+        })
     return joiSchema.validate(_reqBody)
 }
