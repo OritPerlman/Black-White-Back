@@ -74,6 +74,7 @@ router.post("/", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   let validBody = validLogin(req.body)
+  console.log(req.body);
   if (validBody.error) {
     return res.status(400).json(validBody.error.details)
   }
@@ -110,6 +111,9 @@ router.put("/", auth, async (req, res) => {
   try {
     const userId = req.tokenData._id;
     const updatedUserData = req.body;
+    if (req.body.password) {
+      req.body.password = await bcrypt.hash(req.body.password, 10);
+    }
     const updatedUser = await UserModel.findOneAndUpdate(
       { _id: userId },
       updatedUserData,
