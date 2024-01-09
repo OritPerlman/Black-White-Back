@@ -1,12 +1,32 @@
 const express = require("express");
 const { VideosModel, validVideo } = require("../models/videosModel");
+const { UserModel} = require("../models/usersModel");
 const { auth,authAdmin } = require("../middlewares/auth")
 const router = express.Router();
+const jwt = require('jsonwebtoken');
+const { config } = require('../config/secret.js');
 
 router.get("/", auth , async(req,res) => {
   try{
-    let data = await VideosModel.find({});
-    res.status(200).json(data)
+    const token = req.headers['x-api-key'];
+    if (!token) {
+      return res.status(401).json({ msg: "Missing token" });
+    }
+
+    jwt.verify(token, config.tokenSecret, async (err, user) => {
+      if (err) {
+        console.log('Verify error:', err);
+        return res.status(401).json({ msg: "Invalid token"});
+      }
+      const userData = await UserModel.findById({ _id: user._id });
+      const { family, gender, rank } = userData;
+      let query = { family, gender };
+      if (!rank) {
+        query.rank = false;
+      }
+      let data = await VideosModel.find(query).sort({ familyStatus: 1, gender: 1 });
+      res.status(200).json(data);
+    });
   }
   catch(err){
     console.log(err)
@@ -34,6 +54,7 @@ router.post("/", authAdmin, async (req, res) => {
   }
   try {
     let video = new VideosModel(req.body)
+    await video.save();
     res.status(200).json(video)
   }
   catch (err) {
@@ -95,5 +116,13 @@ router.patch("/changeActive/:videoId", authAdmin, async (req, res) => {
       res.status(500).json({ msg: "Error updating video", err });
     }
   });
+
+  setInterval(async () => {
+    const twoWeeksAgo = new Date();
+    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
+    await VideosModel.updateMany({ dateCreated: { $lt: twoWeeksAgo } }, { new: false });
+
+}, 24 * 60 * 60 * 1000); // 24 hours in milliseconds
 
 module.exports = router;

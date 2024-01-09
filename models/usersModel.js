@@ -25,8 +25,8 @@ let userSchema = new mongoose.Schema({
     default: true,
   },
   rank: {
-    type: String,
-    default: "free",
+    type: Boolean,
+    default: false,
   },
   family: {
     type: Boolean,

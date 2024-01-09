@@ -9,11 +9,11 @@ let videoSchema = new mongoose.Schema({
     date_created: {
         type: Date, default: Date.now()
     },
-    familyStatus: {
+    family: {
         type: Boolean, default: false
     },
     gender: {
-        type: Boolean, default: true
+        type: String
     },
     active: {
         type: Boolean, default: true
@@ -23,6 +23,9 @@ let videoSchema = new mongoose.Schema({
     },
     watchLater: {
         type: Boolean, default: false
+    },
+    new: {
+        type: Boolean, default: true
     },
     categories: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -37,6 +40,13 @@ exports.validVideo = (_reqBody) => {
         title: Joi.string().min(2).max(99).required(),
         description: Joi.string().min(2).max(99).required(),
         videoURL: Joi.string().min(2).max(99).pattern(/^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$/).required(),
-        })
-    return joiSchema.validate(_reqBody)
+        family: Joi.boolean(),
+        gender: Joi.string(),
+        active: Joi.boolean(),
+        rank: Joi.boolean(),
+        watchLater: Joi.boolean(),
+        new: Joi.boolean(),
+        categories: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)) // Assuming categories are ObjectIds
+    });
+    return joiSchema.validate(_reqBody);
 }

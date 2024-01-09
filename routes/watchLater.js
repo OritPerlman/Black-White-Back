@@ -5,10 +5,18 @@ const router = express.Router();
 
 router.get("/", auth , async(req,res) => {
     try{
-        const { userId } = req.tokenData._id;
-
-      let data = await WatchLaterModel.findOne({userId: userId});
-      res.status(200).json(data)
+      const token = req.headers['x-api-key'];
+      if (!token) {
+        return res.status(401).json({ msg: "Missing token" });
+      }
+  
+      jwt.verify(token, config.tokenSecret, async (err, user) => {
+        if (err) {
+          console.log('Verify error:', err);
+          return res.status(401).json({ msg: "Invalid token"});
+        }       
+        let data = await WatchLaterModel.findOne({userId: user._id});
+       res.status(200).json(data) })
     }
     catch(err){
       console.log(err)
@@ -16,47 +24,53 @@ router.get("/", auth , async(req,res) => {
     }  
   })
 
-router.delete("/", auth, async (req, res) => {
-  try {
-    const { userId } = req.tokenData._id;
-    let data = await WatchLaterModel.deleteOne({ userId: userId });
-    res.status(200).json(data);
+router.delete("/:videoId", auth, async (req, res) => {
+  try{
+    const token = req.headers['x-api-key'];
+    if (!token) {
+      return res.status(401).json({ msg: "Missing token" });
+    }
+
+    jwt.verify(token, config.tokenSecret, async (err, user) => {
+      if (err) {
+        console.log('Verify error:', err);
+        return res.status(401).json({ msg: "Invalid token"});
+      }       
+      let data = await WatchLaterModel.deleteOne({ userId: user._id }, {videoId: req.params.videoId});
+      res.status(200).json(data) })
   } catch (err) {
     console.log(err);
     res.status(500).json({ msg: "err", err });
   }
 });
-
-router.delete("/:videoId", auth, async (req, res) => {
-    try {
-        const { userId } = req.tokenData._id;
-      const { videoId } = req.params;
-      let data = await WatchLaterModel.deleteOne({ userId: userId }, {videoId: videoId});
-      res.status(200).json(data);
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({ msg: "err", err });
-    }
-  });
   
   router.put("/", auth, async (req, res) => {
     try {
-      const { userId } = req.tokenData._id;
-      const updatedData = req.body;
-      const updated = await WatchLaterModel.findOneAndUpdate(
-        { userId: userId },
-        updatedData,
-        { new: true, runValidators: true }
-      );
-  
-      if (!updated) {
-        return res.status(404).json({ msg: "User not found" });
+      const token = req.headers['x-api-key'];
+      if (!token) {
+        return res.status(401).json({ msg: "Missing token" });
       }
   
-      res.status(200).json(updated);
+      jwt.verify(token, config.tokenSecret, async (err, user) => {
+        if (err) {
+          console.log('Verify error:', err);
+          return res.status(401).json({ msg: "Invalid token"});
+        }       
+        const updatedData = req.body;
+        const updated = await WatchLaterModel.findOneAndUpdate(
+          { userId: user._id },
+          updatedData,
+          { new: true, runValidators: true }
+        );
+        if (!updated) {
+          return res.status(404).json({ msg: "User not found" });
+        }
+        res.status(200).json(updated);      
+      });
     } catch (err) {
       console.log(err);
       res.status(500).json({ msg: "Error updating user", err });
     }
   });
+  
 module.exports = router;
