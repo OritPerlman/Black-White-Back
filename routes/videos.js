@@ -24,7 +24,7 @@ router.get("/", auth , async(req,res) => {
       if (!rank) {
         query.rank = false;
       }
-      let data = await VideosModel.find(query).sort({ familyStatus: 1, gender: 1 });
+      let data = await VideosModel.find(query).sort({ familyStatus: 1, gender: 1 }).populate('categories');;
       res.status(200).json(data);
     });
   }
@@ -38,7 +38,7 @@ router.get("/:videoId", auth , async(req,res) => {
     try{
         const { videoId } = req.params;
 
-      let data = await VideosModel.findOne({_id: videoId});
+      let data = await VideosModel.findOne({_id: videoId}).populate('categories');;
       res.status(200).json(data)
     }
     catch(err){
