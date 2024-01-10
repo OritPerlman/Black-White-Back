@@ -6,7 +6,7 @@ let categorySchema = new mongoose.Schema({
 })
 const CategoriesModel = mongoose.model('Categories', categorySchema);
 
-exports.validCategory = (_reqBody) => {
+validCategory = (_reqBody) => {
     let joiSchema = Joi.object({
         _id: Joi.string().optional(),
         name: Joi.string().min(2).max(99).required()
@@ -14,4 +14,7 @@ exports.validCategory = (_reqBody) => {
     return joiSchema.validate(_reqBody)
 }
 
-module.exports.Categories = CategoriesModel;
+module.exports = {
+    CategoriesModel: mongoose.model("categories", categorySchema),
+    validCategory: validCategory
+  };

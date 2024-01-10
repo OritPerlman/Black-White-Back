@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get("/", auth , async(req,res) => {
   try{
-    let data = await CategoriesModel.find({});
+    let data = await CategoriesModel.find();
     res.status(200).json(data)
   }
   catch(err){
