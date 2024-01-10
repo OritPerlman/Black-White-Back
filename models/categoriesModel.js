@@ -4,7 +4,7 @@ const Joi = require("joi");
 let categorySchema = new mongoose.Schema({
     name: String,
 })
-exports.CategoriesModel = mongoose.model("categories", categorySchema)
+const Categories = mongoose.model('Categories', categorySchema);
 
 exports.validCategory = (_reqBody) => {
     let joiSchema = Joi.object({
@@ -13,3 +13,5 @@ exports.validCategory = (_reqBody) => {
     })
     return joiSchema.validate(_reqBody)
 }
+
+module.exports.Categories = Categories;
