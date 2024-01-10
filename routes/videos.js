@@ -38,7 +38,7 @@ router.get("/:videoId", auth , async(req,res) => {
     try{
         const { videoId } = req.params;
 
-      let data = await VideosModel.findOne({_id: videoId}).populate('categories');;
+      let data = await VideosModel.findOne({_id: videoId}).populate('categories');
       res.status(200).json(data)
     }
     catch(err){
