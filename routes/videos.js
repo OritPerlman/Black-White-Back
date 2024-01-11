@@ -19,12 +19,19 @@ router.get("/", auth , async(req,res) => {
         return res.status(401).json({ msg: "Invalid token"});
       }
       const userData = await UserModel.findById({ _id: user._id });
-      const { family, gender, rank } = userData;
-      let query = { family, gender };
-      if (!rank) {
-        query.rank = false;
+      const { family, gender, rank, role } = userData;
+    
+      let query;
+      if (role) {
+        query = {};
+      } else {
+        query = { family, gender };
+        if (!rank) {
+          query.rank = false;
+        }
       }
-      let data = await VideosModel.find(query).sort({ familyStatus: 1, gender: 1 }).populate('categories');;
+    
+      let data = await VideosModel.find(query).sort({ familyStatus: 1, gender: 1 }).populate('categories');
       res.status(200).json(data);
     });
   }
