@@ -130,6 +130,6 @@ router.patch("/changeActive/:videoId", authAdmin, async (req, res) => {
 
     await VideosModel.updateMany({ dateCreated: { $lt: twoWeeksAgo } }, { new: false });
 
-}, 24 * 60 * 60 * 1000); // 24 hours in milliseconds
+}, 2 * 30 * 24 * 60 * 60 * 1000);
 
 module.exports = router;
