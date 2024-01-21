@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "NODE_OPTIONS='--max-old-space-size=4096' nodemon app"
+    "start": "nodemon --trace-warnings app"
   },
   "keywords": [],
   "author": "",
