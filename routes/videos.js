@@ -125,11 +125,10 @@ router.patch("/changeActive/:videoId", authAdmin, async (req, res) => {
   });
 
   setInterval(async () => {
-    const twoWeeksAgo = new Date();
-    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
-
-    await VideosModel.updateMany({ dateCreated: { $lt: twoWeeksAgo } }, { new: false });
-
-}, 2 * 30 * 24 * 60 * 60 * 1000);
+    const twoMonthsAgo = new Date();
+    twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
+  
+    await VideosModel.updateMany({ dateCreated: { $lt: twoMonthsAgo } }, { new: false });
+  }, 24 * 60 * 60 * 1000);
 
 module.exports = router;
