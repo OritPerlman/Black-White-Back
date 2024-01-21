@@ -6,7 +6,6 @@ const {routesInit} = require("./routes/config_routes")
 require("./db/mongoconnect");
 
 const app = express();
-mongoose.set('strictQuery', false);
 
 app.use(cors());
 app.use(express.json());
